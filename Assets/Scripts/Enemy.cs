@@ -3,13 +3,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    float speed = 4f;
+    float _speed = 4f;
+
+    [Tooltip("Y sets the top plane's y position, X sets the randomness between X and -X (otherwise it just uses the curren X position.")]
+    [SerializeField]
+    Vector2 _topPlane;
 
     [SerializeField]
-    Vector3 topPlane;
-
-    [SerializeField]
-    Vector3 bottomPlane;
+    float _bottomPlane;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,14 +21,14 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * (speed * Time.deltaTime));
+        transform.Translate(Vector3.down * (_speed * Time.deltaTime));
 
-        if(transform.position.y < bottomPlane.y)
+        if(transform.position.y < _bottomPlane)
         {
-            if (topPlane.x <= 0) //no randomness
-                transform.position = new Vector3(transform.position.x, topPlane.y, transform.position.z);
+            if (_topPlane.x <= 0) //no randomness
+                transform.position = new Vector3(transform.position.x, _topPlane.y, transform.position.z);
             else
-                transform.position = new Vector3(Random.Range(-topPlane.x, topPlane.x), topPlane.y, transform.position.z);
+                transform.position = new Vector3(Random.Range(-_topPlane.x, _topPlane.x), _topPlane.y, transform.position.z);
 
         }
     }

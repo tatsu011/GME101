@@ -5,42 +5,42 @@ public class Player : MonoBehaviour
 
     [Header("Player stats")]
     [SerializeField]
-    float speed = 5f;
+    float _speed = 5f;
     [SerializeField]
-    int lives = 4;
+    int _lives = 4;
 
     [Header("Communication Settings.")]
     [SerializeField]
-    SpawnManager spawnManager;
+    SpawnManager _spawnManager;
 
     [Header("Screen bounds")]
     [SerializeField]
-    float upperBounds = 5f;
+    float _upperBounds = 5f;
     [SerializeField]
-    float lowerBounds = -5f;
+    float _lowerBounds = -5f;
     [SerializeField]
-    float rightBounds = 12f;
+    float _rightBounds = 12f;
     [SerializeField]
-    float leftBounds = -12f;
+    float _leftBounds = -12f;
     [SerializeField]
-    bool wrapAround = true;
+    bool _wrapAround = true;
 
     [Header("Laser Settings")]
     [SerializeField]
-    private GameObject laserPrefab;
+    private GameObject _laserPrefab;
     [SerializeField]
-    private Transform laserContainer;
+    private Transform _laserContainer;
     [SerializeField]
-    private Transform laserSpawnPosition;
+    private Transform _laserSpawnPosition;
     [SerializeField]
-    private float fireRate = 2.5f;
+    private float _fireRate = 2.5f;
     [SerializeField]
     float _whenCanFire = -1;
 
 
 
-    Vector3 position;
-    Vector3 motion;
+    Vector3 _position;
+    Vector3 _motion;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,34 +63,34 @@ public class Player : MonoBehaviour
 
     private void DoMovement()
     {
-        motion.x = Input.GetAxis("Horizontal");
-        motion.y = Input.GetAxis("Vertical");
-        motion.z = 0f;
-        transform.Translate(motion * (Time.deltaTime * speed));
+        _motion.x = Input.GetAxis("Horizontal");
+        _motion.y = Input.GetAxis("Vertical");
+        _motion.z = 0f;
+        transform.Translate(_motion * (Time.deltaTime * _speed));
     }
 
     private void BoundsCheck()
     {
-        position = transform.position;
+        _position = transform.position;
 
-        if (transform.position.y < lowerBounds)
-            position.y = lowerBounds;
-        if (transform.position.y > upperBounds)
-            position.y = upperBounds;
-        if (transform.position.x < leftBounds)
-            position.x = wrapAround ? rightBounds : leftBounds; //if wrapAround is checked, move the player to the right-hand side of the screen. else: keep at left
-        if (transform.position.x > rightBounds)
-            position.x = wrapAround ? leftBounds : rightBounds; //if wrapAround is checked, move the player to the left-hand side of the screen. else: keep at right
-        transform.position = position;
+        if (transform.position.y < _lowerBounds)
+            _position.y = _lowerBounds;
+        if (transform.position.y > _upperBounds)
+            _position.y = _upperBounds;
+        if (transform.position.x < _leftBounds)
+            _position.x = _wrapAround ? _rightBounds : _leftBounds; //if wrapAround is checked, move the player to the right-hand side of the screen. else: keep at left
+        if (transform.position.x > _rightBounds)
+            _position.x = _wrapAround ? _leftBounds : _rightBounds; //if wrapAround is checked, move the player to the left-hand side of the screen. else: keep at right
+        transform.position = _position;
     }
 
     private void FireLaser()
     {
-        if (laserSpawnPosition != null)
-            Instantiate(laserPrefab, laserSpawnPosition.position, Quaternion.identity, laserContainer.transform);
+        if (_laserSpawnPosition != null)
+            Instantiate(_laserPrefab, _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
         else
-            Instantiate(laserPrefab, transform.position, Quaternion.identity, laserContainer.transform);
-        _whenCanFire = Time.time + fireRate;
+            Instantiate(_laserPrefab, transform.position, Quaternion.identity, _laserContainer.transform);
+        _whenCanFire = Time.time + _fireRate;
     }
 
     public void UpdateBounds(Vector4 newBounds)
@@ -100,10 +100,10 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        lives--;
-        if(lives <= 0)
+        _lives--;
+        if(_lives <= 0)
         {
-            spawnManager.OnPlayerDeath(); //todo: event.
+            _spawnManager.OnPlayerDeath(); //todo: event.
             Destroy(gameObject);
         }
     }

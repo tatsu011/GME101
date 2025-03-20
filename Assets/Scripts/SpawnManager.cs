@@ -11,17 +11,18 @@ public class SpawnManager : MonoBehaviour
     GameObject _enemyToSpawn;
 
     [SerializeField]
-    Transform parentObject;
+    Transform _parentObject;
 
     [SerializeField]
-    float spawnDelay = 5f;
+    float _spawnDelay = 5f;
 
+    [Tooltip("sets a range.  min: x, max: y")]
     [SerializeField]
-    Vector2 XRange = new Vector2(-8f, 8f);
+    Vector2 _XRange = new Vector2(-8f, 8f);
     [SerializeField]
-    float ypos = 12f;
+    float _yPosition = 12f;
     [SerializeField]
-    float zpos = 0f;
+    float _zposition = 0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,9 +41,9 @@ public class SpawnManager : MonoBehaviour
     {
         while(_spawnEnemies) 
         {
-            Vector3 spawnPos = new Vector3(Random.Range(XRange.x, XRange.y), ypos, zpos);
-            Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, parentObject);
-            yield return new WaitForSeconds(spawnDelay); //this happens last
+            Vector3 spawnPos = new Vector3(Random.Range(_XRange.x, _XRange.y), _yPosition, _zposition);
+            Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, _parentObject);
+            yield return new WaitForSeconds(_spawnDelay); //this happens last
         }
 
         yield return null;
