@@ -34,9 +34,9 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Player")
+        if(other.tag == "Player") 
         {
-            other.SendMessage("Damage");
+            other.GetComponent<Player>()?.Damage();
             Destroy(this.gameObject);
         }
         if(other.tag == "playerProjectile")

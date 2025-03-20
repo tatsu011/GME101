@@ -61,13 +61,12 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void FireLaser()
+    private void DoMovement()
     {
-        if (laserSpawnPosition != null)
-            Instantiate(laserPrefab, laserSpawnPosition.position, Quaternion.identity, laserContainer.transform);
-        else
-            Instantiate(laserPrefab, transform.position, Quaternion.identity, laserContainer.transform);
-        _whenCanFire = Time.time + fireRate;
+        motion.x = Input.GetAxis("Horizontal");
+        motion.y = Input.GetAxis("Vertical");
+        motion.z = 0f;
+        transform.Translate(motion * (Time.deltaTime * speed));
     }
 
     private void BoundsCheck()
@@ -79,23 +78,24 @@ public class Player : MonoBehaviour
         if (transform.position.y > upperBounds)
             position.y = upperBounds;
         if (transform.position.x < leftBounds)
-            position.x = wrapAround ? rightBounds : leftBounds;
+            position.x = wrapAround ? rightBounds : leftBounds; //if wrapAround is checked, move the player to the right-hand side of the screen. else: keep at left
         if (transform.position.x > rightBounds)
-            position.x = wrapAround ? leftBounds : rightBounds;
+            position.x = wrapAround ? leftBounds : rightBounds; //if wrapAround is checked, move the player to the left-hand side of the screen. else: keep at right
         transform.position = position;
+    }
+
+    private void FireLaser()
+    {
+        if (laserSpawnPosition != null)
+            Instantiate(laserPrefab, laserSpawnPosition.position, Quaternion.identity, laserContainer.transform);
+        else
+            Instantiate(laserPrefab, transform.position, Quaternion.identity, laserContainer.transform);
+        _whenCanFire = Time.time + fireRate;
     }
 
     public void UpdateBounds(Vector4 newBounds)
     {
-
-    }
-
-    private void DoMovement()
-    {
-        motion.x = Input.GetAxis("Horizontal");
-        motion.y = Input.GetAxis("Vertical");
-        motion.z = 0f;
-        transform.Translate(motion * (Time.deltaTime * speed));
+        //for future implementation.  
     }
 
     public void Damage()

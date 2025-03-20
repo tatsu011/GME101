@@ -5,10 +5,10 @@ public class SpawnManager : MonoBehaviour
 {
 
     [SerializeField]
-    bool SpawnEnemies = true;
+    bool _spawnEnemies = true;
 
     [SerializeField]
-    GameObject enemyToSpawn;
+    GameObject _enemyToSpawn;
 
     [SerializeField]
     Transform parentObject;
@@ -38,11 +38,11 @@ public class SpawnManager : MonoBehaviour
     //iEnumerate spawn rate.
     IEnumerator spawnEnemy()
     {
-        while(SpawnEnemies)
+        while(_spawnEnemies) 
         {
-            yield return new WaitForSeconds(spawnDelay);
             Vector3 spawnPos = new Vector3(Random.Range(XRange.x, XRange.y), ypos, zpos);
-            Instantiate(enemyToSpawn, spawnPos, Quaternion.identity, parentObject);
+            Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, parentObject);
+            yield return new WaitForSeconds(spawnDelay); //this happens last
         }
 
         yield return null;
@@ -50,7 +50,7 @@ public class SpawnManager : MonoBehaviour
 
     public void OnPlayerDeath()
     {
-        SpawnEnemies = false;
+        _spawnEnemies = false;
     }
 
 }
