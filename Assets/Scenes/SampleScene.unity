@@ -654,6 +654,7 @@ MonoBehaviour:
   _powerUpSpawnRate: {x: 3, y: 7}
   _powerUpOptions:
   - {fileID: 5233580428629302018, guid: d68e56d68ad26ea4983dc96b44067aaf, type: 3}
+  - {fileID: 3190520827675898775, guid: 51f70c8b332535c4680fa23239b29a2b, type: 3}
   _powerUpContainer: {fileID: 244367606}
   _XRange: {x: -8, y: 8}
   _yPosition: 12
@@ -741,6 +742,7 @@ MonoBehaviour:
   _whenCanFire: -1
   _lasers: 1
   _powerupCooldown: 5
+  _speedBoost: 2.5
 --- !u!61 &1664393840
 BoxCollider2D:
   m_ObjectHideFlags: 0

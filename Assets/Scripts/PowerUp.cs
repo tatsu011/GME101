@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PowerUp : MonoBehaviour
@@ -33,5 +32,7 @@ public class PowerUp : MonoBehaviour
 
 public enum PowerupType
 {
-    ShotUp,ShieldUp,SpeedUp
+    ShotUp,
+    ShieldUp,
+    SpeedUp
 }

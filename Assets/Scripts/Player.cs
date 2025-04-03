@@ -44,8 +44,10 @@ public class Player : MonoBehaviour
     [Header("PowerupSettings")]
     [SerializeField]
     float _powerupCooldown = 5f;
+    [SerializeField]
+    float _speedBoost = 2.5f;
 
-
+    float _boostedSpeed = 1.0f;
     Vector3 _position;
     Vector3 _motion;
 
@@ -73,7 +75,7 @@ public class Player : MonoBehaviour
         _motion.x = Input.GetAxis("Horizontal");
         _motion.y = Input.GetAxis("Vertical");
         _motion.z = 0f;
-        transform.Translate(_motion * (Time.deltaTime * _speed));
+        transform.Translate(_motion * (Time.deltaTime * _speed * _boostedSpeed));
     }
 
     private void BoundsCheck()
@@ -124,8 +126,11 @@ public class Player : MonoBehaviour
                 StartCoroutine(LaserPowerDownRoutine());
                 break;
             case PowerupType.ShieldUp:
+                //StartCoroutine(ShieldPowerDownRoutine());
                 break;
             case PowerupType.SpeedUp:
+                _boostedSpeed = _speedBoost;
+                StartCoroutine(SpeedPowerDownRoutine());
                 break;
             default:
                 break;
@@ -139,5 +144,15 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(_powerupCooldown);
             _lasers--;
         }
+        yield return null; 
+    }
+    IEnumerator SpeedPowerDownRoutine()
+    {
+        while(_boostedSpeed != 1)
+        {
+            yield return new WaitForSeconds(_powerupCooldown);
+            _boostedSpeed = 1;
+        }
+        yield return null;
     }
 }
