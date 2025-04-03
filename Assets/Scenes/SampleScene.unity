@@ -150,6 +150,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1664393838}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &244367605
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 244367606}
+  m_Layer: 0
+  m_Name: PowerUpContainer
+  m_TagString: container
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &244367606
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244367605}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &316360731
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +431,7 @@ Transform:
   m_GameObject: {fileID: 600694789}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.09, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -521,7 +552,7 @@ GameObject:
   - component: {fileID: 967939542}
   m_Layer: 0
   m_Name: EnemyContainer
-  m_TagString: Untagged
+  m_TagString: container
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -553,7 +584,7 @@ GameObject:
   - component: {fileID: 1127051983}
   m_Layer: 0
   m_Name: LaserContainer
-  m_TagString: Untagged
+  m_TagString: container
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -585,9 +616,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 504c9a7dabbc11a4e9a199ed524cff59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PrePoolSize: 0
-  growingPool: 0
-  prefab: {fileID: 1573443543798918680, guid: b39d16464c512ce429b434d5b1b1a2b5, type: 3}
+  _prePoolSize: 0
+  _growingPool: 0
+  _prefab: {fileID: 0}
 --- !u!1 &1490487767
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,13 +648,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b45ba8487571e4aac46239d4b6d778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnEnemies: 1
-  enemyToSpawn: {fileID: 2616526908488558689, guid: 74e58d4914ddd4a43b9774a2ca1928bd, type: 3}
-  parentObject: {fileID: 967939542}
-  spawnDelay: 5
-  XRange: {x: -8, y: 8}
-  ypos: 6
-  zpos: 0
+  _enemyToSpawn: {fileID: 2616526908488558689, guid: 74e58d4914ddd4a43b9774a2ca1928bd, type: 3}
+  _enemyContainer: {fileID: 967939542}
+  _enemySpawnDelay: 5
+  _powerUpSpawnRate: {x: 3, y: 7}
+  _powerUpOptions:
+  - {fileID: 5233580428629302018, guid: d68e56d68ad26ea4983dc96b44067aaf, type: 3}
+  _powerUpContainer: {fileID: 244367606}
+  _XRange: {x: -8, y: 8}
+  _yPosition: 12
+  _zposition: 0
+  _spawnThings: 1
 --- !u!4 &1490487769
 Transform:
   m_ObjectHideFlags: 0
@@ -666,7 +701,7 @@ Transform:
   m_GameObject: {fileID: 1664393834}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.71, y: -3.38, z: 0}
+  m_LocalPosition: {x: 0, y: -3.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -686,19 +721,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b80624e32ad7d43a18fdad7f62fa8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  lives: 3
-  spawnManager: {fileID: 1490487768}
-  upperBounds: 5
-  lowerBounds: -5
-  rightBounds: 12
-  leftBounds: -12
-  wrapAround: 1
-  laserPrefab: {fileID: 3434120870337806738, guid: b39d16464c512ce429b434d5b1b1a2b5, type: 3}
-  laserContainer: {fileID: 1127051982}
-  laserSpawnPosition: {fileID: 203555472}
-  fireRate: 0.25
+  _speed: 5
+  _lives: 4
+  _spawnManager: {fileID: 1490487768}
+  _upperBounds: 5
+  _lowerBounds: -5
+  _rightBounds: 12
+  _leftBounds: -12
+  _wrapAround: 1
+  _laserPrefabs:
+  - {fileID: 3434120870337806738, guid: b39d16464c512ce429b434d5b1b1a2b5, type: 3}
+  - {fileID: 5513502389361398252, guid: 0615fa699037a5f468a61231e4c60717, type: 3}
+  - {fileID: 7666590019926404906, guid: d5624889850257f4f8aa06b90c4891c5, type: 3}
+  - {fileID: 8978833057037357299, guid: 6d4649ce5acf1b6488ee2fc854df71bb, type: 3}
+  - {fileID: 7544882164818351620, guid: 2a57c31cbf0e73746b2227194991ed61, type: 3}
+  _laserContainer: {fileID: 1127051982}
+  _laserSpawnPosition: {fileID: 203555472}
+  _fireRate: 0.5
   _whenCanFire: -1
+  _lasers: 1
+  _powerupCooldown: 5
 --- !u!61 &1664393840
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -753,6 +795,7 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1664393838}
   - {fileID: 1127051982}
+  - {fileID: 244367606}
   - {fileID: 967939542}
   - {fileID: 1490487769}
   - {fileID: 316360733}

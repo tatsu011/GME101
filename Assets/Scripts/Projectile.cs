@@ -20,7 +20,11 @@ public class Projectile : MonoBehaviour
         transform.Translate(Vector3.up * (_speed * Time.deltaTime));
 
         if (life < Time.time)
+        {
+            if (transform.parent.tag != "container") //Don't break the container please.
+                Destroy(transform.parent.gameObject);
             Destroy(gameObject);
+        }
 
     }
 }

@@ -42,7 +42,15 @@ public class Enemy : MonoBehaviour
         }
         if(other.tag == "playerProjectile")
         {
-            Destroy(other.gameObject);
+            if (other.gameObject.transform.parent.tag != "container" && other.transform.parent.childCount == 1)
+            {
+                Destroy(other.transform.parent.gameObject);
+            }
+            else
+            {
+                Destroy(other.gameObject);
+            }
+
             Destroy(gameObject);
         }
     }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -27,7 +29,7 @@ public class Player : MonoBehaviour
 
     [Header("Laser Settings")]
     [SerializeField]
-    private GameObject _laserPrefab;
+    private GameObject[] _laserPrefabs;
     [SerializeField]
     private Transform _laserContainer;
     [SerializeField]
@@ -36,7 +38,12 @@ public class Player : MonoBehaviour
     private float _fireRate = 2.5f;
     [SerializeField]
     float _whenCanFire = -1;
+    [SerializeField]
+    int _lasers = 1;
 
+    [Header("PowerupSettings")]
+    [SerializeField]
+    float _powerupCooldown = 5f;
 
 
     Vector3 _position;
@@ -86,16 +93,16 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
-        if (_laserSpawnPosition != null)
-            Instantiate(_laserPrefab, _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
-        else
-            Instantiate(_laserPrefab, transform.position, Quaternion.identity, _laserContainer.transform);
-        _whenCanFire = Time.time + _fireRate;
-    }
+        if (_lasers > 5)
+            _lasers = 5;
+        if (_lasers < 1)
+            _lasers = 1;
 
-    public void UpdateBounds(Vector4 newBounds)
-    {
-        //for future implementation.  
+        if(_lasers == 1)
+            Instantiate(_laserPrefabs[_lasers - 1], _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
+        else
+            Instantiate(_laserPrefabs[_lasers - 1], transform.position, Quaternion.identity, _laserContainer.transform);
+        _whenCanFire = Time.time + _fireRate;
     }
 
     public void Damage()
@@ -105,6 +112,32 @@ public class Player : MonoBehaviour
         {
             _spawnManager.OnPlayerDeath(); //todo: event.
             Destroy(gameObject);
+        }
+    }
+
+    internal void ActivatePowerup(PowerupType powerType)
+    {
+        switch (powerType)
+        {
+            case PowerupType.ShotUp:
+                _lasers++;
+                StartCoroutine(LaserPowerDownRoutine());
+                break;
+            case PowerupType.ShieldUp:
+                break;
+            case PowerupType.SpeedUp:
+                break;
+            default:
+                break;
+        }
+    }
+
+    IEnumerator LaserPowerDownRoutine()
+    {
+        while(_lasers > 1)
+        {
+            yield return new WaitForSeconds(_powerupCooldown);
+            _lasers--;
         }
     }
 }
