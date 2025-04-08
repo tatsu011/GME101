@@ -12,10 +12,15 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     float _bottomPlane;
 
+    [SerializeField]
+    int points;
+
+    Player _player;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        _player = FindAnyObjectByType<Player>();
     }
 
     // Update is called once per frame
@@ -38,6 +43,7 @@ public class Enemy : MonoBehaviour
         if(other.tag == "Player") 
         {
             other.GetComponent<Player>()?.Damage();
+            other.GetComponent<Player>()?.OnEnemyKill(points); //this is the easy version..
             Destroy(this.gameObject);
         }
         if(other.tag == "playerProjectile")
@@ -50,7 +56,8 @@ public class Enemy : MonoBehaviour
             {
                 Destroy(other.gameObject);
             }
-
+            //this is the hard version which is more common...
+            _player?.OnEnemyKill(points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
             Destroy(gameObject);
         }
     }

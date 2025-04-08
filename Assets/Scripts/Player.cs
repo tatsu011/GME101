@@ -46,15 +46,23 @@ public class Player : MonoBehaviour
     float _powerupCooldown = 5f;
     [SerializeField]
     float _speedBoost = 2.5f;
+    [SerializeField]
+    bool _activeShield = false;
+    [SerializeField]
+    Transform _shieldVisual;
+    [SerializeField]
+    int _score = 0;
 
     float _boostedSpeed = 1.0f;
     Vector3 _position;
     Vector3 _motion;
+    GameObject _activeLaserInstance;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        _shieldVisual.gameObject.SetActive(false);
+        UIManager.Instance.UpdateScore(_score);
     }
 
     // Update is called once per frame
@@ -101,20 +109,31 @@ public class Player : MonoBehaviour
             _lasers = 1;
 
         if(_lasers == 1)
-            Instantiate(_laserPrefabs[_lasers - 1], _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
+            _activeLaserInstance = Instantiate(_laserPrefabs[_lasers - 1], _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
         else
-            Instantiate(_laserPrefabs[_lasers - 1], transform.position, Quaternion.identity, _laserContainer.transform);
+            _activeLaserInstance = Instantiate(_laserPrefabs[_lasers - 1], transform.position, Quaternion.identity, _laserContainer.transform);
+
+        foreach (Projectile p in _activeLaserInstance.GetComponentsInChildren<Projectile>(true))
+            p.setOwner(gameObject);
+
         _whenCanFire = Time.time + _fireRate;
     }
 
     public void Damage()
     {
+        if(_activeShield)
+        {
+            DeactivateShields();
+            return;
+        }
+
         _lives--;
         if(_lives <= 0)
         {
             _spawnManager.OnPlayerDeath(); //todo: event.
             Destroy(gameObject);
         }
+        UIManager.Instance.UpdateLives(_lives);
     }
 
     internal void ActivatePowerup(PowerupType powerType)
@@ -126,7 +145,7 @@ public class Player : MonoBehaviour
                 StartCoroutine(LaserPowerDownRoutine());
                 break;
             case PowerupType.ShieldUp:
-                //StartCoroutine(ShieldPowerDownRoutine());
+                ActivateShields();
                 break;
             case PowerupType.SpeedUp:
                 _boostedSpeed = _speedBoost;
@@ -135,6 +154,24 @@ public class Player : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    void ActivateShields()
+    {
+        _activeShield = true;
+        _shieldVisual.gameObject.SetActive(true);
+    }
+
+    void DeactivateShields()
+    {
+        _activeShield = false;
+        _shieldVisual.gameObject.SetActive(false);
+    }
+
+    public void OnEnemyKill(int value)
+    {
+        _score += value;
+        UIManager.Instance.UpdateScore(_score);
     }
 
     IEnumerator LaserPowerDownRoutine()

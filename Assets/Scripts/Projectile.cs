@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     [SerializeField]
     float _lifetime = 10;
 
+    GameObject _owner;
+
     float life;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,5 +28,15 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
 
+    }
+
+    public void setOwner(GameObject owner)
+    {
+        _owner = owner;
+    }
+
+    public GameObject getOwner()
+    {
+        return _owner;
     }
 }
