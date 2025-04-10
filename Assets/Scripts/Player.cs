@@ -130,7 +130,8 @@ public class Player : MonoBehaviour
         _lives--;
         if(_lives <= 0)
         {
-            _spawnManager.OnPlayerDeath(); //todo: event.
+            _spawnManager.OnPlayerDeath();
+            UIManager.Instance.OnPlayerDeath();
             Destroy(gameObject);
         }
         UIManager.Instance.UpdateLives(_lives);

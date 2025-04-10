@@ -15,12 +15,30 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     int points;
 
+    [SerializeField]
+    bool destroying = false;
+
+    [SerializeField]
+    float animationLength = 2.5f;
+
     Player _player;
+    Animator _anim;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _player = FindAnyObjectByType<Player>();
+        if(_player == null)
+        {
+            Debug.LogError("Unable to find Player object.");
+        }
+
+        _anim = GetComponent<Animator>();
+        if(_anim == null)
+        {
+            Debug.LogError("Error: Enemy missing animator component!");
+        }
+
     }
 
     // Update is called once per frame
@@ -44,7 +62,11 @@ public class Enemy : MonoBehaviour
         {
             other.GetComponent<Player>()?.Damage();
             other.GetComponent<Player>()?.OnEnemyKill(points); //this is the easy version..
-            Destroy(this.gameObject);
+            _anim.SetTrigger("Destroying");
+            _speed = 0f;
+            Destroy(this.gameObject, animationLength);
+            GetComponent<Collider2D>().enabled = false;
+            destroying = true;
         }
         if(other.tag == "playerProjectile")
         {
@@ -58,7 +80,12 @@ public class Enemy : MonoBehaviour
             }
             //this is the hard version which is more common...
             _player?.OnEnemyKill(points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
-            Destroy(gameObject);
+            _anim.SetTrigger("Destroying");
+            _speed = 0f;
+            Destroy(gameObject, animationLength);
+            GetComponent<Collider2D>().enabled = false;
+            destroying = true;
+
         }
     }
 }

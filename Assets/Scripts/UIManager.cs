@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -8,10 +9,13 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     TMP_Text _scoreText;
     [SerializeField]
+    TMP_Text _gameOverText;
+    [SerializeField]
+    TMP_Text _restartText;
+    [SerializeField]
     private Sprite[] _lifeSprites;
     [SerializeField]
     private Image _lifeImage;
-
 
     public static UIManager Instance
     {
@@ -19,8 +23,8 @@ public class UIManager : MonoBehaviour
     }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Using onAwake, because it's called before Start.
+    void Awake()
     {
         if(_instance != null)
         {
@@ -28,8 +32,11 @@ public class UIManager : MonoBehaviour
             return;
         }
         _instance = this;
+        _gameOverText.gameObject.SetActive(false);
 
     }
+
+
 
     public void UpdateScore(int value)
     {
@@ -45,5 +52,16 @@ public class UIManager : MonoBehaviour
         _lifeImage.sprite = _lifeSprites[value];
     }
 
+    internal void OnPlayerDeath()
+    {
+        _gameOverText.gameObject.SetActive(true);
+        StartCoroutine(PostDeathCoroutine());
+        GameManager.Instance.GameOver();
+    }
 
+    IEnumerator PostDeathCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        _restartText.gameObject.SetActive(true);
+    }
 }
