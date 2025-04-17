@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Astroid : MonoBehaviour
 {
@@ -8,6 +9,13 @@ public class Astroid : MonoBehaviour
     GameObject _explosionPrefab;
     [SerializeField]
     float _explosionDuration = 2.5f;
+    SpawnManager _spawnManager;
+
+    private void Start()
+    {
+        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+    }
+
 
 
     // Update is called once per frame
@@ -22,6 +30,7 @@ public class Astroid : MonoBehaviour
         {
             Destroy(Instantiate(_explosionPrefab, transform.position, Quaternion.identity), _explosionDuration);
             Destroy(collision.gameObject);
+            _spawnManager.StartSpawning();
             Destroy(gameObject);
 
         }

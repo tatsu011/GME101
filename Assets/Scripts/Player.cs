@@ -1,15 +1,18 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
 
-    [Header("Player stats")]
+    [Header("Player Settings")]
     [SerializeField]
     float _speed = 5f;
     [SerializeField]
-    int _lives = 4;
+    int _lives = 3;
+    [SerializeField]
+    Transform[] _damageVisuals;
+    [SerializeField]
+    Transform _thrusterVisual;
 
     [Header("Communication Settings.")]
     [SerializeField]
@@ -57,6 +60,10 @@ public class Player : MonoBehaviour
     Vector3 _position;
     Vector3 _motion;
     GameObject _activeLaserInstance;
+    int _lastDamageID = -1;
+
+    Coroutine _laserCoroutine;
+    Coroutine _SpeedCoroutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -135,6 +142,16 @@ public class Player : MonoBehaviour
             Destroy(gameObject);
         }
         UIManager.Instance.UpdateLives(_lives);
+        UpdateVisuals();
+    }
+
+    void UpdateVisuals()
+    {
+        if (_lastDamageID < 0)
+            _lastDamageID = Random.Range(0, _damageVisuals.Length);
+
+
+        _damageVisuals[_lastDamageID].gameObject.SetActive(true);
     }
 
     internal void ActivatePowerup(PowerupType powerType)
@@ -143,14 +160,18 @@ public class Player : MonoBehaviour
         {
             case PowerupType.ShotUp:
                 _lasers++;
-                StartCoroutine(LaserPowerDownRoutine());
+                if (_laserCoroutine != null)
+                    StopCoroutine(_laserCoroutine); //reset the laser timer in addition to the boost.
+                _laserCoroutine = StartCoroutine(LaserPowerDownRoutine());
                 break;
             case PowerupType.ShieldUp:
                 ActivateShields();
                 break;
             case PowerupType.SpeedUp:
                 _boostedSpeed = _speedBoost;
-                StartCoroutine(SpeedPowerDownRoutine());
+                if (_SpeedCoroutine != null)
+                    StopCoroutine(_SpeedCoroutine); //Reset the speed timer when speed is picked up.
+                _SpeedCoroutine = StartCoroutine(SpeedPowerDownRoutine());
                 break;
             default:
                 break;

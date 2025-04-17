@@ -10,7 +10,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     Transform _enemyContainer;
     [SerializeField]
-    float _enemySpawnDelay = 5f;
+    float _enemySpawnRate = 5f;
 
     [Header("Powerup Spawn Settings")]
     [Tooltip("sets a rate in seconds to spawn powerups.  min: x, max: y")]
@@ -20,7 +20,8 @@ public class SpawnManager : MonoBehaviour
     GameObject[] _powerUpOptions;
     [SerializeField]
     Transform _powerUpContainer;
-
+    [SerializeField]
+    float _powerUpSpawnDelay;
 
     [Header("General Spawn Settings")]
     [Tooltip("sets a range.  min: x, max: y")]
@@ -32,12 +33,13 @@ public class SpawnManager : MonoBehaviour
     float _zposition = 0f;
     [SerializeField]
     bool _spawnThings = true;
+    [SerializeField]
+    float _allEnemySpawnDelay = 2.0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        StartCoroutine(spawnEnemyRoutine());
-        StartCoroutine(spawnPowerupRoutine());
+
     }
 
     // Update is called once per frame
@@ -46,14 +48,21 @@ public class SpawnManager : MonoBehaviour
         
     }
 
+    public void StartSpawning()
+    {
+        StartCoroutine(spawnEnemyRoutine());
+        StartCoroutine(spawnPowerupRoutine());
+    }
+
     //iEnumerate enemy spawns.
     IEnumerator spawnEnemyRoutine()
     {
+        yield return new WaitForSeconds(_allEnemySpawnDelay);
         while(_spawnThings) 
         {
             Vector3 spawnPos = new Vector3(Random.Range(_XRange.x, _XRange.y), _yPosition, _zposition);
             Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, _enemyContainer);
-            yield return new WaitForSeconds(_enemySpawnDelay); //this happens last
+            yield return new WaitForSeconds(_enemySpawnRate); //this happens last
         }
 
         yield return null;
@@ -62,6 +71,7 @@ public class SpawnManager : MonoBehaviour
     //iEnumerate powerup spawns.
     IEnumerator spawnPowerupRoutine()
     {
+        yield return new WaitForSeconds(_powerUpSpawnDelay);
         while(_spawnThings)
         {
             Vector3 spawnPos = new Vector3(Random.Range(_XRange.x, _XRange.y), _yPosition, _zposition);
