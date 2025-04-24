@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
 
     Player _player;
     Animator _anim;
+    AudioSource _audio;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,6 +38,11 @@ public class Enemy : MonoBehaviour
         if(_anim == null)
         {
             Debug.LogError("Error: Enemy missing animator component!");
+        }
+        _audio = GetComponent<AudioSource>();
+        if(_audio == null)
+        {
+            Debug.LogError("Error: no audio for death sfx.");
         }
 
     }
@@ -63,6 +69,7 @@ public class Enemy : MonoBehaviour
             other.GetComponent<Player>()?.Damage();
             other.GetComponent<Player>()?.OnEnemyKill(points); //this is the easy version..
             _anim.SetTrigger("Destroying");
+            _audio.Play();
             _speed = 0f;
             Destroy(this.gameObject, animationLength);
             GetComponent<Collider2D>().enabled = false;
@@ -81,6 +88,7 @@ public class Enemy : MonoBehaviour
             //this is the hard version which is more common...
             _player?.OnEnemyKill(points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
             _anim.SetTrigger("Destroying");
+            _audio.Play();
             _speed = 0f;
             Destroy(gameObject, animationLength);
             GetComponent<Collider2D>().enabled = false;

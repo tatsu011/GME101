@@ -13,6 +13,10 @@ public class Player : MonoBehaviour
     Transform[] _damageVisuals;
     [SerializeField]
     Transform _thrusterVisual;
+    [SerializeField]
+    GameObject _explosionPrefab;
+    [SerializeField]
+    float _explosionDuration = 2.5f;
 
     [Header("Communication Settings.")]
     [SerializeField]
@@ -43,6 +47,8 @@ public class Player : MonoBehaviour
     float _whenCanFire = -1;
     [SerializeField]
     int _lasers = 1;
+    [SerializeField]
+    AudioClip _laserSound;
 
     [Header("PowerupSettings")]
     [SerializeField]
@@ -55,12 +61,15 @@ public class Player : MonoBehaviour
     Transform _shieldVisual;
     [SerializeField]
     int _score = 0;
+    [SerializeField]
+    AudioClip _powerUpClip;
 
     float _boostedSpeed = 1.0f;
     Vector3 _position;
     Vector3 _motion;
     GameObject _activeLaserInstance;
     int _lastDamageID = -1;
+    AudioSource _audioPlayer;
 
     Coroutine _laserCoroutine;
     Coroutine _SpeedCoroutine;
@@ -70,6 +79,11 @@ public class Player : MonoBehaviour
     {
         _shieldVisual.gameObject.SetActive(false);
         UIManager.Instance.UpdateScore(_score);
+        _audioPlayer = GetComponent<AudioSource>();
+        foreach(Transform t in _damageVisuals)
+        {
+            t.gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -123,7 +137,10 @@ public class Player : MonoBehaviour
         foreach (Projectile p in _activeLaserInstance.GetComponentsInChildren<Projectile>(true))
             p.setOwner(gameObject);
 
+        
         _whenCanFire = Time.time + _fireRate;
+        _audioPlayer.clip = _laserSound;
+        _audioPlayer.Play();
     }
 
     public void Damage()
@@ -139,6 +156,7 @@ public class Player : MonoBehaviour
         {
             _spawnManager.OnPlayerDeath();
             UIManager.Instance.OnPlayerDeath();
+            Destroy(Instantiate(_explosionPrefab, transform.position, Quaternion.identity), _explosionDuration);
             Destroy(gameObject);
         }
         UIManager.Instance.UpdateLives(_lives);
@@ -148,10 +166,18 @@ public class Player : MonoBehaviour
     void UpdateVisuals()
     {
         if (_lastDamageID < 0)
+        {
             _lastDamageID = Random.Range(0, _damageVisuals.Length);
-
-
-        _damageVisuals[_lastDamageID].gameObject.SetActive(true);
+            _damageVisuals[_lastDamageID].gameObject.SetActive(true);
+        }
+        else
+        {
+            foreach(Transform t in _damageVisuals)
+            {
+                if (!t.gameObject.activeInHierarchy)
+                    t.gameObject.SetActive(true);
+            }
+        }   
     }
 
     internal void ActivatePowerup(PowerupType powerType)
@@ -176,6 +202,8 @@ public class Player : MonoBehaviour
             default:
                 break;
         }
+        _audioPlayer.clip = _powerUpClip;
+        _audioPlayer.Play();
     }
 
     void ActivateShields()
