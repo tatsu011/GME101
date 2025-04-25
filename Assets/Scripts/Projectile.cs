@@ -23,20 +23,10 @@ public class Projectile : MonoBehaviour
 
         if (life < Time.time)
         {
-            if (transform.parent.tag != "container") //Don't break the container please.
+            if (transform.parent != null && transform.parent.tag != "container") //Don't break the container please.
                 Destroy(transform.parent.gameObject);
             Destroy(gameObject);
         }
 
-    }
-
-    public void setOwner(GameObject owner)
-    {
-        _owner = owner;
-    }
-
-    public GameObject getOwner()
-    {
-        return _owner;
     }
 }

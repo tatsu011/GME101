@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     GameObject _explosionPrefab;
     [SerializeField]
     float _explosionDuration = 2.5f;
+    [SerializeField]
+    float _invulnTime = 1.0f;
 
     [Header("Communication Settings.")]
     [SerializeField]
@@ -64,6 +66,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     AudioClip _powerUpClip;
 
+    float _lastHitTime = -1f;
     float _boostedSpeed = 1.0f;
     Vector3 _position;
     Vector3 _motion;
@@ -133,20 +136,29 @@ public class Player : MonoBehaviour
             _activeLaserInstance = Instantiate(_laserPrefabs[_lasers - 1], _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
         else
             _activeLaserInstance = Instantiate(_laserPrefabs[_lasers - 1], transform.position, Quaternion.identity, _laserContainer.transform);
-
-        foreach (Projectile p in _activeLaserInstance.GetComponentsInChildren<Projectile>(true))
-            p.setOwner(gameObject);
-
-        
+       
         _whenCanFire = Time.time + _fireRate;
         _audioPlayer.clip = _laserSound;
         _audioPlayer.Play();
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "enemyProjectile")
+        {
+            Damage(); //take the hit.
+            Destroy(collision.gameObject); //get rid of the projectile.
+        }
+    }
+
     public void Damage()
     {
+        if (_lastHitTime + _invulnTime > Time.time)
+            return;
+
         if(_activeShield)
         {
+            _lastHitTime = Time.time;
             DeactivateShields();
             return;
         }
@@ -159,6 +171,7 @@ public class Player : MonoBehaviour
             Destroy(Instantiate(_explosionPrefab, transform.position, Quaternion.identity), _explosionDuration);
             Destroy(gameObject);
         }
+        _lastHitTime = Time.time;
         UIManager.Instance.UpdateLives(_lives);
         UpdateVisuals();
     }

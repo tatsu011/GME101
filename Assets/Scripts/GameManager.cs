@@ -31,6 +31,12 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); 
             //Reload the active scene.  Much more reuseable than LoadScene(0); especially if we want to tweak difficulty.
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
     }
 
     public void GameOver()

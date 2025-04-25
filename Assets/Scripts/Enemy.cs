@@ -13,17 +13,27 @@ public class Enemy : MonoBehaviour
     float _bottomPlane;
 
     [SerializeField]
-    int points;
+    int _points;
 
     [SerializeField]
-    bool destroying = false;
+    float _animationLength = 2.5f;
 
+    [Header("Laser settings")]
     [SerializeField]
-    float animationLength = 2.5f;
+    float _minFireRate = 2.5f;
+    [SerializeField]
+    float _maxFireRate = 7f;
+    [SerializeField]
+    GameObject _laserPrefab;
+    [SerializeField]
+    Transform _laserSpawnPosition;
 
     Player _player;
     Animator _anim;
     AudioSource _audio;
+    float _nextShotTime = 0f;
+    Transform _laserContainer;
+    bool _gettingDestroyed = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -44,7 +54,10 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("Error: no audio for death sfx.");
         }
-
+        _laserContainer = GameObject.Find("LaserContainer").transform;
+        
+        _nextShotTime = Random.Range(_minFireRate, _maxFireRate) + Time.time;
+        
     }
 
     // Update is called once per frame
@@ -60,6 +73,24 @@ public class Enemy : MonoBehaviour
                 transform.position = new Vector3(Random.Range(-_topPlane.x, _topPlane.x), _topPlane.y, transform.position.z);
 
         }
+
+        if(Time.time > _nextShotTime && !_gettingDestroyed)
+        {
+            FireLaser();
+        }
+
+    }
+
+    void FireLaser()
+    {
+        //spawn a laser, based off our position and rotation.
+        if(_laserContainer != null)
+            Instantiate(_laserPrefab, _laserSpawnPosition.position, Quaternion.FromToRotation(Vector3.up, Vector3.down), _laserContainer);
+        else
+            Instantiate(_laserPrefab, _laserSpawnPosition.position, transform.rotation);
+
+        _nextShotTime = Random.Range(_minFireRate, _maxFireRate) + Time.time;
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -67,13 +98,13 @@ public class Enemy : MonoBehaviour
         if(other.tag == "Player") 
         {
             other.GetComponent<Player>()?.Damage();
-            other.GetComponent<Player>()?.OnEnemyKill(points); //this is the easy version..
+            other.GetComponent<Player>()?.OnEnemyKill(_points); //this is the easy version..
             _anim.SetTrigger("Destroying");
             _audio.Play();
             _speed = 0f;
-            Destroy(this.gameObject, animationLength);
+            Destroy(this.gameObject, _animationLength);
+            _gettingDestroyed = true;
             GetComponent<Collider2D>().enabled = false;
-            destroying = true;
         }
         if(other.tag == "playerProjectile")
         {
@@ -86,13 +117,13 @@ public class Enemy : MonoBehaviour
                 Destroy(other.gameObject);
             }
             //this is the hard version which is more common...
-            _player?.OnEnemyKill(points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
+            _player?.OnEnemyKill(_points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
             _anim.SetTrigger("Destroying");
             _audio.Play();
             _speed = 0f;
-            Destroy(gameObject, animationLength);
+            Destroy(gameObject, _animationLength);
+            _gettingDestroyed = true;
             GetComponent<Collider2D>().enabled = false;
-            destroying = true;
 
         }
     }
