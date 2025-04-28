@@ -7,19 +7,48 @@ public class Player : MonoBehaviour
     [Header("Player Settings")]
     [SerializeField]
     float _speed = 5f;
+    public float Speed
+    {
+        get
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && _currentThruster > _cooldownRate)
+            {
+                _currentThruster -= _cooldownRate;
+                UIManager.Instance.UpdateThruster(_currentThruster / _maxThruster);
+                return _speed * _thrustMultiplier;
+            }
+            else
+            {
+                
+                _currentThruster += _cooldownRate / 2;
+                UIManager.Instance.UpdateThruster(_currentThruster / _maxThruster);
+            }
+                return _speed;
+        }
+    }
+
     [SerializeField]
     int _lives = 3;
     [SerializeField]
     Transform[] _damageVisuals;
     [SerializeField]
-    Transform _thrusterVisual;
+    SpriteRenderer _thrusterVisual;
+    [SerializeField]
+    float _thrustMultiplier = 1.5f;
+    [SerializeField]
+    Color _boostedThrusterColor;
     [SerializeField]
     GameObject _explosionPrefab;
     [SerializeField]
     float _explosionDuration = 2.5f;
     [SerializeField]
     float _invulnTime = 1.0f;
-
+    [SerializeField]
+    float _maxThruster = 100f;
+    [SerializeField]
+    float _currentThruster = 100f;
+    [SerializeField]
+    float _cooldownRate = 1.0f;
     [Header("Communication Settings.")]
     [SerializeField]
     SpawnManager _spawnManager;
@@ -100,6 +129,16 @@ public class Player : MonoBehaviour
         {
             FireLaser();
         }
+
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _thrusterVisual.color = _boostedThrusterColor;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift) || _currentThruster <= _cooldownRate) 
+        {
+            _thrusterVisual.color = Color.white;
+        }
+        
     }
 
     private void DoMovement()
@@ -107,7 +146,7 @@ public class Player : MonoBehaviour
         _motion.x = Input.GetAxis("Horizontal");
         _motion.y = Input.GetAxis("Vertical");
         _motion.z = 0f;
-        transform.Translate(_motion * (Time.deltaTime * _speed * _boostedSpeed));
+        transform.Translate(_motion * (Time.deltaTime * Speed * _boostedSpeed));
     }
 
     private void BoundsCheck()
@@ -193,7 +232,7 @@ public class Player : MonoBehaviour
         }   
     }
 
-    internal void ActivatePowerup(PowerupType powerType)
+    internal void ActivatePowerup(PowerupType powerType) //potential todo: break this out into the PowerUp script.
     {
         switch (powerType)
         {
@@ -246,6 +285,7 @@ public class Player : MonoBehaviour
         }
         yield return null; 
     }
+
     IEnumerator SpeedPowerDownRoutine()
     {
         while(_boostedSpeed != 1)

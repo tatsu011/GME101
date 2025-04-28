@@ -1620,9 +1620,9 @@ MonoBehaviour:
   - {fileID: 8549416422865975363, guid: 8d4d43be6d95b8d47a9441f9998d554c, type: 3}
   _powerUpContainer: {fileID: 244367606}
   _powerUpSpawnDelay: 1
-  _XRange: {x: -8, y: 8}
+  _xRange: {x: -8, y: 8}
   _yPosition: 12
-  _zposition: 0
+  _zPosition: 0
   _spawnThings: 1
   _allEnemySpawnDelay: 2
 --- !u!4 &1490487769
@@ -1807,7 +1807,9 @@ MonoBehaviour:
   _damageVisuals:
   - {fileID: 20479144}
   - {fileID: 1556052897}
-  _thrusterVisual: {fileID: 2107726692}
+  _thrusterVisual: {fileID: 2107726694}
+  _thrustMultiplier: 1.5
+  _boostedThrusterColor: {r: 0, g: 0, b: 0, a: 0}
   _explosionPrefab: {fileID: 1879677719135934898, guid: 21801e2a8a8a7854394256d593b7a49e, type: 3}
   _explosionDuration: 2.5
   _invulnTime: 1

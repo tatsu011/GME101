@@ -63,9 +63,20 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DoMovement();
+
+        if (Time.time > _nextShotTime && !_gettingDestroyed)
+        {
+            FireLaser();
+        }
+
+    }
+
+    private void DoMovement()
+    {
         transform.Translate(Vector3.down * (_speed * Time.deltaTime));
 
-        if(transform.position.y < _bottomPlane)
+        if (transform.position.y < _bottomPlane)
         {
             if (_topPlane.x <= 0) //no randomness
                 transform.position = new Vector3(transform.position.x, _topPlane.y, transform.position.z);
@@ -73,12 +84,6 @@ public class Enemy : MonoBehaviour
                 transform.position = new Vector3(Random.Range(-_topPlane.x, _topPlane.x), _topPlane.y, transform.position.z);
 
         }
-
-        if(Time.time > _nextShotTime && !_gettingDestroyed)
-        {
-            FireLaser();
-        }
-
     }
 
     void FireLaser()
@@ -95,18 +100,13 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Player") 
+        if(other.tag == "Player")
         {
-            other.GetComponent<Player>()?.Damage();
-            other.GetComponent<Player>()?.OnEnemyKill(_points); //this is the easy version..
-            _anim.SetTrigger("Destroying");
-            _audio.Play();
-            _speed = 0f;
-            Destroy(this.gameObject, _animationLength);
-            _gettingDestroyed = true;
-            GetComponent<Collider2D>().enabled = false;
+            _player?.Damage();
+            _player?.OnEnemyKill(_points); //this is the easy version..
+            OnDeath();
         }
-        if(other.tag == "playerProjectile")
+        if (other.tag == "playerProjectile")
         {
             if (other.gameObject.transform.parent.tag != "container" && other.transform.parent.childCount == 1)
             {
@@ -118,13 +118,18 @@ public class Enemy : MonoBehaviour
             }
             //this is the hard version which is more common...
             _player?.OnEnemyKill(_points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
-            _anim.SetTrigger("Destroying");
-            _audio.Play();
-            _speed = 0f;
-            Destroy(gameObject, _animationLength);
-            _gettingDestroyed = true;
-            GetComponent<Collider2D>().enabled = false;
+            OnDeath();
 
         }
+    }
+
+    private void OnDeath()
+    {
+        _anim.SetTrigger("Destroying");
+        _audio.Play();
+        _speed = 0f;
+        Destroy(this.gameObject, _animationLength);
+        _gettingDestroyed = true;
+        GetComponent<Collider2D>().enabled = false;
     }
 }

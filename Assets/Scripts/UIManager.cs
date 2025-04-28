@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class UIManager : MonoBehaviour
     private Sprite[] _lifeSprites;
     [SerializeField]
     private Image _lifeImage;
+    [SerializeField]
+    private Image _thrusterImage;
 
     public static UIManager Instance
     {
@@ -24,7 +27,7 @@ public class UIManager : MonoBehaviour
 
 
     // Using onAwake, because it's called before Start.
-    void Awake()
+    void Awake() //awake
     {
         if(_instance != null)
         {
@@ -32,8 +35,11 @@ public class UIManager : MonoBehaviour
             return;
         }
         _instance = this;
-        _gameOverText.gameObject.SetActive(false);
+    }
 
+    private void Start()
+    {
+        _gameOverText.gameObject.SetActive(false);
     }
 
 
@@ -63,5 +69,10 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         _restartText.gameObject.SetActive(true);
+    }
+
+    internal void UpdateThruster(float v)
+    {
+        _thrusterImage.fillAmount = v;
     }
 }
