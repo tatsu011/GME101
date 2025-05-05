@@ -11,6 +11,8 @@ public class PowerUp : MonoBehaviour
     PowerupType _powerType;
     [SerializeField]
     int _powerUpContents;
+    [SerializeField]
+    AudioClip _powerUpSound;
 
     private void Update()
     {
@@ -26,7 +28,8 @@ public class PowerUp : MonoBehaviour
             Player player = collision.GetComponent<Player>();
             if (player == null)
                 return;
-            player.ActivatePowerup(_powerType, _powerUpContents);
+
+            player.ActivatePowerup(_powerType, _powerUpContents, _powerUpSound);
             Destroy(gameObject);
         }
     }
@@ -36,5 +39,6 @@ public enum PowerupType
 {
     ShotUp,
     ShieldUp,
-    SpeedUp
+    SpeedUp,
+    Ammunition
 }

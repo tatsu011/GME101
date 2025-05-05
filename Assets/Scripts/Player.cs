@@ -272,7 +272,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    internal void ActivatePowerup(PowerupType powerType, int powerUpContents) 
+    internal void ActivatePowerup(PowerupType powerType, int powerUpContents, AudioClip powerUpSound) 
     {
         switch (powerType)
         {
@@ -291,11 +291,17 @@ public class Player : MonoBehaviour
                     StopCoroutine(_SpeedCoroutine); //Reset the speed timer when speed is picked up.
                 _SpeedCoroutine = StartCoroutine(SpeedPowerDownRoutine());
                 break;
+            case PowerupType.Ammunition:
+
+                break;
             default:
                 break;
         }
-        _audioPlayer.clip = _powerUpClip;
-        _audioPlayer.Play();
+        if (powerUpSound == null)
+            _audioPlayer.clip = _powerUpClip;
+        else
+            _audioPlayer.clip = powerUpSound;
+            _audioPlayer.Play();
     }
 
     void ActivateShields()
