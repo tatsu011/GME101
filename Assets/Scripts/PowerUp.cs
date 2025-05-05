@@ -9,6 +9,8 @@ public class PowerUp : MonoBehaviour
 
     [SerializeField]
     PowerupType _powerType;
+    [SerializeField]
+    int _powerUpContents;
 
     private void Update()
     {
@@ -24,7 +26,7 @@ public class PowerUp : MonoBehaviour
             Player player = collision.GetComponent<Player>();
             if (player == null)
                 return;
-            player.ActivatePowerup(_powerType);
+            player.ActivatePowerup(_powerType, _powerUpContents);
             Destroy(gameObject);
         }
     }

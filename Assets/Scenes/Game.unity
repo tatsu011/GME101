@@ -1226,6 +1226,7 @@ RectTransform:
   - {fileID: 186546352}
   - {fileID: 534831411}
   - {fileID: 584828434}
+  - {fileID: 2056556555}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1808,11 +1809,18 @@ MonoBehaviour:
   - {fileID: 20479144}
   - {fileID: 1556052897}
   _thrusterVisual: {fileID: 2107726694}
+  _ShieldLevels:
+  - {r: 0.3679245, g: 0.3679245, b: 0.3679245, a: 0.5372549}
+  - {r: 1, g: 0.7352653, b: 0.5424528, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
   _thrustMultiplier: 1.5
-  _boostedThrusterColor: {r: 0, g: 0, b: 0, a: 0}
+  _boostedThrusterColor: {r: 0.012682426, g: 0.4904911, b: 0.8962264, a: 1}
   _explosionPrefab: {fileID: 1879677719135934898, guid: 21801e2a8a8a7854394256d593b7a49e, type: 3}
   _explosionDuration: 2.5
   _invulnTime: 1
+  _maxThruster: 100
+  _currentThruster: 100
+  _cooldownRate: 1
   _spawnManager: {fileID: 1490487768}
   _upperBounds: 5
   _lowerBounds: -5
@@ -1834,6 +1842,8 @@ MonoBehaviour:
   _powerupCooldown: 5
   _speedBoost: 2.5
   _activeShield: 0
+  _maxShieldHealth: 3
+  _shieldHealth: 0
   _shieldVisual: {fileID: 2079596226}
   _score: 0
   _powerUpClip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
@@ -2018,6 +2028,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 482c8e4c0346b704aa5f1760c3c989d5, type: 3}
   - {fileID: 21300000, guid: 9fe6f40efddf0b64fb68a3382b14a4db, type: 3}
   _lifeImage: {fileID: 186546353}
+  _thrusterImage: {fileID: 2056556553}
 --- !u!4 &2034712724
 Transform:
   m_ObjectHideFlags: 0
@@ -2112,6 +2123,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2056556552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2056556555}
+  - component: {fileID: 2056556554}
+  - component: {fileID: 2056556553}
+  m_Layer: 5
+  m_Name: ThrusterUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2056556553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056556552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0.34482765, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: a45d21c30e0154a9ca1a5d6fb2bf3cfa, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 1
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 1
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2056556554
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056556552}
+  m_CullTransparentMesh: 1
+--- !u!224 &2056556555
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056556552}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 731191768}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -313.84402, y: 135.58571}
+  m_SizeDelta: {x: 28.6546, y: 146.3119}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2079596225
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
+    #region "Variables"
     [Header("Player Settings")]
     [SerializeField]
     float _speed = 5f;
@@ -19,8 +19,9 @@ public class Player : MonoBehaviour
             }
             else
             {
-                
-                _currentThruster += _cooldownRate / 2;
+                if(_currentThruster < _maxThruster)
+                    _currentThruster += _cooldownRate / 2;
+
                 UIManager.Instance.UpdateThruster(_currentThruster / _maxThruster);
             }
                 return _speed;
@@ -33,6 +34,8 @@ public class Player : MonoBehaviour
     Transform[] _damageVisuals;
     [SerializeField]
     SpriteRenderer _thrusterVisual;
+    [SerializeField]
+    Color[] _ShieldLevels;
     [SerializeField]
     float _thrustMultiplier = 1.5f;
     [SerializeField]
@@ -89,6 +92,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     bool _activeShield = false;
     [SerializeField]
+    int _maxShieldHealth = 3;
+    [SerializeField]
+    int _shieldHealth = 0;
+    [SerializeField]
     Transform _shieldVisual;
     [SerializeField]
     int _score = 0;
@@ -106,6 +113,9 @@ public class Player : MonoBehaviour
     Coroutine _laserCoroutine;
     Coroutine _SpeedCoroutine;
 
+    #endregion //variables.
+
+    #region "Functionality"
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -197,8 +207,14 @@ public class Player : MonoBehaviour
 
         if(_activeShield)
         {
+            _shieldHealth--; //new variable: int
             _lastHitTime = Time.time;
-            DeactivateShields();
+            UpdateShieldVisuals();
+            if (_shieldHealth <= 0)
+            {
+                DeactivateShields();
+            }
+
             return;
         }
 
@@ -232,7 +248,31 @@ public class Player : MonoBehaviour
         }   
     }
 
-    internal void ActivatePowerup(PowerupType powerType) //potential todo: break this out into the PowerUp script.
+    public void OnEnemyKill(int value)
+    {
+        _score += value;
+        UIManager.Instance.UpdateScore(_score);
+    }
+    #endregion
+
+    #region "Powerups"
+    void UpdateShieldVisuals()
+    {
+        if (_shieldHealth >= _maxShieldHealth)
+        {
+            _shieldVisual.GetComponent<SpriteRenderer>().color = _ShieldLevels[^1]; //get the last shield level.
+        }
+        else if(_shieldHealth > 0)
+        {
+            _shieldVisual.GetComponent<SpriteRenderer>().color = _ShieldLevels[_shieldHealth - 1];
+        }
+        else
+        {
+            _shieldVisual.gameObject.SetActive(false);
+        }
+    }
+
+    internal void ActivatePowerup(PowerupType powerType, int powerUpContents) 
     {
         switch (powerType)
         {
@@ -261,7 +301,9 @@ public class Player : MonoBehaviour
     void ActivateShields()
     {
         _activeShield = true;
+        _shieldHealth = _maxShieldHealth;
         _shieldVisual.gameObject.SetActive(true);
+        _shieldVisual.GetComponent<SpriteRenderer>().color = _ShieldLevels[_ShieldLevels.Length - 1]; //get last shield level.
     }
 
     void DeactivateShields()
@@ -270,29 +312,26 @@ public class Player : MonoBehaviour
         _shieldVisual.gameObject.SetActive(false);
     }
 
-    public void OnEnemyKill(int value)
-    {
-        _score += value;
-        UIManager.Instance.UpdateScore(_score);
-    }
-
     IEnumerator LaserPowerDownRoutine()
     {
-        while(_lasers > 1)
+        while (_lasers > 1)
         {
             yield return new WaitForSeconds(_powerupCooldown);
             _lasers--;
         }
-        yield return null; 
+        yield return null;
     }
 
     IEnumerator SpeedPowerDownRoutine()
     {
-        while(_boostedSpeed != 1)
+        while (_boostedSpeed != 1)
         {
             yield return new WaitForSeconds(_powerupCooldown);
             _boostedSpeed = 1;
         }
         yield return null;
     }
+
+    #endregion
+
 }
