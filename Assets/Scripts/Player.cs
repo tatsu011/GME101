@@ -76,6 +76,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Transform _laserSpawnPosition;
     [SerializeField]
+    private int _laserAmmoCount = 15;
+    [SerializeField]
     private float _fireRate = 2.5f;
     [SerializeField]
     float _whenCanFire = -1;
@@ -83,6 +85,8 @@ public class Player : MonoBehaviour
     int _lasers = 1;
     [SerializeField]
     AudioClip _laserSound;
+    [SerializeField]
+    AudioClip _emptyLaserSound;
 
     [Header("PowerupSettings")]
     [SerializeField]
@@ -121,6 +125,7 @@ public class Player : MonoBehaviour
     {
         _shieldVisual.gameObject.SetActive(false);
         UIManager.Instance.UpdateScore(_score);
+        UIManager.Instance.UpdateAmmo(_laserAmmoCount);
         _audioPlayer = GetComponent<AudioSource>();
         foreach(Transform t in _damageVisuals)
         {
@@ -176,6 +181,17 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
+        if(_laserAmmoCount <= 0)
+        {
+            _audioPlayer.clip = _emptyLaserSound;
+            _audioPlayer.Play();
+            _whenCanFire = Time.time + _fireRate;
+            return;
+        }
+
+        _laserAmmoCount--;
+        UIManager.Instance.UpdateAmmo(_laserAmmoCount);
+
         if (_lasers > 5)
             _lasers = 5;
         if (_lasers < 1)
@@ -292,7 +308,8 @@ public class Player : MonoBehaviour
                 _SpeedCoroutine = StartCoroutine(SpeedPowerDownRoutine());
                 break;
             case PowerupType.Ammunition:
-
+                _laserAmmoCount += powerUpContents;
+                UIManager.Instance.UpdateAmmo(_laserAmmoCount);
                 break;
             default:
                 break;

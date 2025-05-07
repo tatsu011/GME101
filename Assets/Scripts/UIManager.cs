@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour
     private Image _lifeImage;
     [SerializeField]
     private Image _thrusterImage;
+    [SerializeField]
+    TMP_Text _ammoText;
 
     public static UIManager Instance
     {
@@ -74,5 +76,10 @@ public class UIManager : MonoBehaviour
     internal void UpdateThruster(float v)
     {
         _thrusterImage.fillAmount = v;
+    }
+
+    internal void UpdateAmmo(int ammo)
+    {
+        _ammoText.text = $"Ammo: {ammo}";
     }
 }
