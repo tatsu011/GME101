@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField]
+    int _maxLives = 3;
+    [SerializeField]
     int _lives = 3;
     [SerializeField]
     Transform[] _damageVisuals;
@@ -311,6 +313,9 @@ public class Player : MonoBehaviour
                 _laserAmmoCount += powerUpContents;
                 UIManager.Instance.UpdateAmmo(_laserAmmoCount);
                 break;
+            case PowerupType.Health:
+                Heal();
+                break;
             default:
                 break;
         }
@@ -320,6 +325,26 @@ public class Player : MonoBehaviour
             _audioPlayer.clip = powerUpSound;
             _audioPlayer.Play();
     }
+
+    void Heal()
+    {
+        if (_lives >= _maxLives)
+            return;
+
+        _lives++;
+        UIManager.Instance.UpdateLives(_lives);
+
+        foreach (Transform t in _damageVisuals)
+        {
+            if (t.gameObject.activeInHierarchy)
+            {
+                t.gameObject.SetActive(false);
+                return;
+            }
+        }
+
+    }
+
 
     void ActivateShields()
     {
