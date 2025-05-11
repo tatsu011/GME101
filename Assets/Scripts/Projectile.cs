@@ -6,8 +6,11 @@ public class Projectile : MonoBehaviour
     float _speed;
     [SerializeField]
     float _lifetime = 10;
+    [SerializeField]
+    GameObject _spawnableObject;
+    [SerializeField]
+    float _spawnedObjectLifetime;
 
-    GameObject _owner;
 
     float life;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,6 +28,9 @@ public class Projectile : MonoBehaviour
         {
             if (transform.parent != null && transform.parent.tag != "container") //Don't break the container please.
                 Destroy(transform.parent.gameObject);
+
+            if (_spawnableObject != null) //spawn whatever payload is in the object.
+                Destroy(Instantiate(_spawnableObject, transform.position, transform.rotation), _spawnedObjectLifetime);
             Destroy(gameObject);
         }
 

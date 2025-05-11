@@ -107,6 +107,12 @@ public class Player : MonoBehaviour
     int _score = 0;
     [SerializeField]
     AudioClip _powerUpClip;
+    [SerializeField]
+    GameObject _pulseBombPrefab;
+    [SerializeField]
+    bool _pulseBombActive;
+    [SerializeField]
+    float _pulseBombFireRate = 2.5f;
 
     float _lastHitTime = -1f;
     float _boostedSpeed = 1.0f;
@@ -117,7 +123,8 @@ public class Player : MonoBehaviour
     AudioSource _audioPlayer;
 
     Coroutine _laserCoroutine;
-    Coroutine _SpeedCoroutine;
+    Coroutine _speedCoroutine;
+    Coroutine _pulseBombRoutine;
 
     #endregion //variables.
 
@@ -183,6 +190,16 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
+        if(_pulseBombActive)
+        {
+            _activeLaserInstance = Instantiate(_pulseBombPrefab, _laserSpawnPosition.position, Quaternion.identity, _laserContainer.transform);
+            _whenCanFire = Time.time + _pulseBombFireRate;
+            _audioPlayer.clip = _laserSound;
+            _audioPlayer.Play();
+            return; //Pulse bomb costs no ammo, so don't bother doing the rest.
+        }
+
+
         if(_laserAmmoCount <= 0)
         {
             _audioPlayer.clip = _emptyLaserSound;
@@ -305,9 +322,9 @@ public class Player : MonoBehaviour
                 break;
             case PowerupType.SpeedUp:
                 _boostedSpeed = _speedBoost;
-                if (_SpeedCoroutine != null)
-                    StopCoroutine(_SpeedCoroutine); //Reset the speed timer when speed is picked up.
-                _SpeedCoroutine = StartCoroutine(SpeedPowerDownRoutine());
+                if (_speedCoroutine != null)
+                    StopCoroutine(_speedCoroutine); //Reset the speed timer when speed is picked up.
+                _speedCoroutine = StartCoroutine(SpeedPowerDownRoutine());
                 break;
             case PowerupType.Ammunition:
                 _laserAmmoCount += powerUpContents;
@@ -315,6 +332,9 @@ public class Player : MonoBehaviour
                 break;
             case PowerupType.Health:
                 Heal();
+                break;
+            case PowerupType.PulseBomb:
+                ActivatePulseBomb();
                 break;
             default:
                 break;
@@ -358,6 +378,27 @@ public class Player : MonoBehaviour
     {
         _activeShield = false;
         _shieldVisual.gameObject.SetActive(false);
+    }
+
+    void ActivatePulseBomb()
+    {
+        _pulseBombActive = true;
+        if (_lasers > 1)
+        {
+            _lasers++;
+        }
+        if (_pulseBombRoutine != null)
+        {
+            StopCoroutine(_pulseBombRoutine);
+        }
+        _pulseBombRoutine = StartCoroutine(PulseBombPowerDownRoutine());
+    }
+
+    IEnumerator PulseBombPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(_powerupCooldown);
+        _pulseBombActive = false;
+
     }
 
     IEnumerator LaserPowerDownRoutine()

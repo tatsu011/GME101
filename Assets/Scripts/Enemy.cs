@@ -104,7 +104,7 @@ public class Enemy : MonoBehaviour
         {
             _player?.Damage();
             _player?.OnEnemyKill(_points); //this is the easy version..
-            OnDeath();
+            TakeDamage();
         }
         if (other.tag == "playerProjectile")
         {
@@ -118,9 +118,18 @@ public class Enemy : MonoBehaviour
             }
             //this is the hard version which is more common...
             _player?.OnEnemyKill(_points); //this is equvalent to if(_player != null) _player.OnEnemyKill();
-            OnDeath();
+            TakeDamage();
 
         }
+        if(other.tag == "playerExplosive")
+        {
+            TakeDamage();
+        }
+    }
+
+    private void TakeDamage()
+    {
+        OnDeath();
     }
 
     private void OnDeath()
