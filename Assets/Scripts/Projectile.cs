@@ -10,7 +10,8 @@ public class Projectile : MonoBehaviour
     GameObject _spawnableObject;
     [SerializeField]
     float _spawnedObjectLifetime;
-
+    [SerializeField]
+    bool _spawnedObjectImpactEffect = false;
 
     float life;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -30,7 +31,11 @@ public class Projectile : MonoBehaviour
                 Destroy(transform.parent.gameObject);
 
             if (_spawnableObject != null) //spawn whatever payload is in the object.
+            {
+                if(_spawnedObjectImpactEffect) Camera.main.GetComponent<CameraEffects>().DoCameraShake();
+
                 Destroy(Instantiate(_spawnableObject, transform.position, transform.rotation), _spawnedObjectLifetime);
+            }
             Destroy(gameObject);
         }
 

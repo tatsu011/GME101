@@ -262,6 +262,7 @@ public class Player : MonoBehaviour
             Destroy(gameObject);
         }
         _lastHitTime = Time.time;
+        Camera.main.GetComponent<CameraEffects>().DoCameraShake();
         UIManager.Instance.UpdateLives(_lives);
         UpdateVisuals();
     }

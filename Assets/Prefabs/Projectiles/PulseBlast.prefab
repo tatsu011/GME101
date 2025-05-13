@@ -179,3 +179,4 @@ MonoBehaviour:
   _lifetime: 0.75
   _spawnableObject: {fileID: 6084551872656864432, guid: 41a97da48317d3344a51a8cd89476035, type: 3}
   _spawnedObjectLifetime: 2.5
+  _spawnedObjectImpactEffect: 1
