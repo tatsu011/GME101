@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IEnemy
 {
     [SerializeField]
     float _speed = 4f;
@@ -27,6 +27,8 @@ public class Enemy : MonoBehaviour
     GameObject _laserPrefab;
     [SerializeField]
     Transform _laserSpawnPosition;
+    [SerializeField]
+    Vector2 _movingDirection = Vector2.down;
 
     Player _player;
     Animator _anim;
@@ -72,35 +74,9 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void DoMovement()
-    {
-        transform.Translate(Vector3.down * (_speed * Time.deltaTime));
-
-        if (transform.position.y < _bottomPlane)
-        {
-            if (_topPlane.x <= 0) //no randomness
-                transform.position = new Vector3(transform.position.x, _topPlane.y, transform.position.z);
-            else
-                transform.position = new Vector3(Random.Range(-_topPlane.x, _topPlane.x), _topPlane.y, transform.position.z);
-
-        }
-    }
-
-    void FireLaser()
-    {
-        //spawn a laser, based off our position and rotation.
-        if(_laserContainer != null)
-            Instantiate(_laserPrefab, _laserSpawnPosition.position, Quaternion.FromToRotation(Vector3.up, Vector3.down), _laserContainer);
-        else
-            Instantiate(_laserPrefab, _laserSpawnPosition.position, transform.rotation);
-
-        _nextShotTime = Random.Range(_minFireRate, _maxFireRate) + Time.time;
-
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Player")
+        if (other.tag == "Player")
         {
             _player?.Damage();
             _player?.OnEnemyKill(_points); //this is the easy version..
@@ -121,18 +97,44 @@ public class Enemy : MonoBehaviour
             TakeDamage();
 
         }
-        if(other.tag == "playerExplosive")
+        if (other.tag == "playerExplosive")
         {
             TakeDamage();
         }
     }
 
-    private void TakeDamage()
+    public virtual void DoMovement()
+    {
+        transform.Translate(_movingDirection * (_speed * Time.deltaTime));
+
+        if (transform.position.y < _bottomPlane)
+        {
+            if (_topPlane.x <= 0) //no randomness
+                transform.position = new Vector3(transform.position.x, _topPlane.y, transform.position.z);
+            else
+                transform.position = new Vector3(Random.Range(-_topPlane.x, _topPlane.x), _topPlane.y, transform.position.z);
+
+        }
+    }
+
+    public virtual void FireLaser()
+    {
+        //spawn a laser, based off our position and rotation.
+        if(_laserContainer != null)
+            Instantiate(_laserPrefab, _laserSpawnPosition.position, Quaternion.FromToRotation(Vector3.up, Vector3.down), _laserContainer);
+        else
+            Instantiate(_laserPrefab, _laserSpawnPosition.position, transform.rotation);
+
+        _nextShotTime = Random.Range(_minFireRate, _maxFireRate) + Time.time;
+
+    }
+
+    public virtual void TakeDamage()
     {
         OnDeath();
     }
 
-    private void OnDeath()
+    public virtual void OnDeath()
     {
         _anim.SetTrigger("Destroying");
         _audio.Play();
