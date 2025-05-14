@@ -28,9 +28,9 @@ public class Enemy : MonoBehaviour, IEnemy
     [SerializeField]
     Transform _laserSpawnPosition;
     [SerializeField]
-    Vector2 _movingDirection = Vector2.down;
+    protected Vector2 _movingDirection = Vector2.down;
 
-    Player _player;
+    protected Player _player;
     Animator _anim;
     AudioSource _audio;
     float _nextShotTime = 0f;
@@ -142,5 +142,10 @@ public class Enemy : MonoBehaviour, IEnemy
         Destroy(this.gameObject, _animationLength);
         _gettingDestroyed = true;
         GetComponent<Collider2D>().enabled = false;
+    }
+
+    public virtual void Initialize(int flags)
+    {
+
     }
 }
