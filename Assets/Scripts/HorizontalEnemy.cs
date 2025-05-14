@@ -32,7 +32,7 @@ public class HorizontalEnemy : Enemy
     void FlipDirection()
     {
         _movingDirection = _movingDirection * -1;
-        _renderObject.flipX = !_renderObject.flipX; //invert the flip.
+        _renderObject.flipY = !_renderObject.flipY; //invert the flip based off the original sprite's Y Axis.
     }
     public override void OnDeath()
     {
