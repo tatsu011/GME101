@@ -6,7 +6,9 @@ public class SpawnManager : MonoBehaviour
 
     [Header("Enemy Spawn Settings")]
     [SerializeField]
-    GameObject _enemyToSpawn;
+    GameObject[] _enemiesToSpawn; //todo: scriptableObject.
+    [SerializeField]
+    Transform[] _spawners;
     [SerializeField]
     Transform _enemyContainer;
     [SerializeField]
@@ -46,12 +48,13 @@ public class SpawnManager : MonoBehaviour
     IEnumerator spawnEnemyRoutine()
     {
         yield return new WaitForSeconds(_allEnemySpawnDelay);
-        while(_spawnThings) 
-        {
-            Vector3 spawnPos = new Vector3(Random.Range(_xRange.x, _xRange.y), _yPosition, _zPosition);
-            Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, _enemyContainer);
-            yield return new WaitForSeconds(_enemySpawnRate); //this happens last
-        }
+        //while(_spawnThings) 
+        //{
+        //    Vector3 spawnPos = new Vector3(Random.Range(_xRange.x, _xRange.y), _yPosition, _zPosition);
+        //    Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, _enemyContainer);
+        //    yield return new WaitForSeconds(_enemySpawnRate); //this happens last
+        //}
+        //commented out because I am changing the way spawning is handled.
 
         yield return null;
     }

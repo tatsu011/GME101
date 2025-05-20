@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class HorizontalEnemy : Enemy
@@ -12,13 +13,15 @@ public class HorizontalEnemy : Enemy
     GameObject _explosionPrefab;
     [SerializeField]
     float _explosionDuration = 2.5f;
-
+    [SerializeField]
+    bool _borderChecked = false;
     public override void DoMovement()
     {
         base.DoMovement();
-        if(Mathf.Abs(transform.position.x) > _borderDistance)
+        if(!_borderChecked && Mathf.Abs(transform.position.x) > _borderDistance)
         {
             FlipDirection();
+            StartCoroutine(BorderCheckDelay());
         }
 
     }
@@ -39,6 +42,13 @@ public class HorizontalEnemy : Enemy
         //no base, we just doing our own thing.
         Destroy(Instantiate(_explosionPrefab, transform.position, transform.rotation), _explosionDuration);
         Destroy(gameObject);
+    }
+
+    IEnumerator BorderCheckDelay()
+    {
+        _borderChecked = true;
+        yield return new WaitForSeconds(1);
+        _borderChecked = false;
     }
 
 }

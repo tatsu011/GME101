@@ -4,7 +4,7 @@ public class Enemy : MonoBehaviour, IEnemy
 {
     [SerializeField]
     float _speed = 4f;
-
+    [SerializeField] protected Direction _defaultFacingDirection = Direction.south;
     [Tooltip("Y sets the top plane's y position, X sets the randomness between X and -X (otherwise it just uses the curren X position.")]
     [SerializeField]
     Vector2 _topPlane;
@@ -148,4 +148,14 @@ public class Enemy : MonoBehaviour, IEnemy
     {
 
     }
+
+    public Direction GetFacingDirection()
+    {
+        return _defaultFacingDirection;
+    }
+}
+
+public enum Direction
+{
+    north, east, south, west
 }
