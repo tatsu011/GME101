@@ -7,4 +7,5 @@ public interface IEnemy
     void FireLaser();
     void TakeDamage();
     void OnDeath();
+    Direction GetFacingDirection();
 }

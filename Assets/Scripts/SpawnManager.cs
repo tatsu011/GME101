@@ -1,18 +1,20 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.Rendering.STP;
 
 public class SpawnManager : MonoBehaviour
 {
 
     [Header("Enemy Spawn Settings")]
     [SerializeField]
-    GameObject[] _enemiesToSpawn; //todo: scriptableObject.
+    EnemySpawnConfiguration[] _enemiesToSpawn; 
     [SerializeField]
     Transform[] _spawners;
     [SerializeField]
-    Transform _enemyContainer;
+    Direction[] _spawnerFacingDirections;
     [SerializeField]
-    float _enemySpawnRate = 5f;
+    Transform _enemyContainer;
 
     [Header("Powerup Spawn Settings")]
     [Tooltip("sets a rate in seconds to spawn powerups.  min: x, max: y")]
@@ -38,6 +40,16 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     float _allEnemySpawnDelay = 2.0f;
 
+    Vector3 _currentEnemyLookingDir;
+
+    public int EnemyCount
+    {
+        get
+        {
+            return _enemyContainer.childCount;
+        }
+    }
+
     public void StartSpawning()
     {
         StartCoroutine(spawnEnemyRoutine());
@@ -48,14 +60,33 @@ public class SpawnManager : MonoBehaviour
     IEnumerator spawnEnemyRoutine()
     {
         yield return new WaitForSeconds(_allEnemySpawnDelay);
-        //while(_spawnThings) 
-        //{
-        //    Vector3 spawnPos = new Vector3(Random.Range(_xRange.x, _xRange.y), _yPosition, _zPosition);
-        //    Instantiate(_enemyToSpawn, spawnPos, Quaternion.identity, _enemyContainer);
-        //    yield return new WaitForSeconds(_enemySpawnRate); //this happens last
-        //}
-        //commented out because I am changing the way spawning is handled.
+        foreach(EnemySpawnConfiguration config in _enemiesToSpawn)
+        {
+            if (!_spawnThings)
+                break;
 
+            for(int i = 0; i < config.spawnCount; i++)
+            {
+                Vector3 offset = config.spawnOffsets[i];
+                Instantiate(config.enemyPrefab, _spawners[config.spawnerID].position + offset, _spawners[config.spawnerID].rotation, _enemyContainer);
+            }
+
+            if (config.flag == PostWaveFlag.UntilAllClear)
+            {
+                while (EnemyCount > 0)
+                {
+                    yield return new WaitForSeconds(1);
+                }
+            }
+
+            yield return new WaitForSeconds(config.delay);
+        }
+        Debug.Log("No more enemies remain.");
+        while (EnemyCount > 0)
+        {
+            yield return new WaitForSeconds(1);
+        }
+        Debug.Log("All enemies eliminated");
         yield return null;
     }
 

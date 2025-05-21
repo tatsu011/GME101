@@ -149,7 +149,7 @@ public class Enemy : MonoBehaviour, IEnemy
 
     }
 
-    public Direction GetFacingDirection()
+    public virtual Direction GetFacingDirection()
     {
         return _defaultFacingDirection;
     }

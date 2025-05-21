@@ -1846,13 +1846,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b45ba8487571e4aac46239d4b6d778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemiesToSpawn: []
+  _enemiesToSpawn:
+  - {fileID: 11400000, guid: 676b064363fa407438e2491870f2a546, type: 2}
   _spawners:
   - {fileID: 332654724}
   - {fileID: 1514402928}
   - {fileID: 1084177225}
+  _spawnerFacingDirections: 020000000300000001000000
   _enemyContainer: {fileID: 967939542}
-  _enemySpawnRate: 5
   _powerUpSpawnRate: {x: 3, y: 7}
   _powerUpOptions:
   - {fileID: 5233580428629302018, guid: d68e56d68ad26ea4983dc96b44067aaf, type: 3}
