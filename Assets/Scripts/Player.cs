@@ -113,6 +113,9 @@ public class Player : MonoBehaviour
     bool _pulseBombActive;
     [SerializeField]
     float _pulseBombFireRate = 2.5f;
+    [SerializeField]
+    float _laserLockTimeDelay = 5f; //duration of the laser lock.
+
 
     float _lastHitTime = -1f;
     float _boostedSpeed = 1.0f;
@@ -337,6 +340,9 @@ public class Player : MonoBehaviour
             case PowerupType.PulseBomb:
                 ActivatePulseBomb();
                 break;
+            case PowerupType.LaserLock:
+                ActivateLaserLock();
+                break;
             default:
                 break;
         }
@@ -345,6 +351,11 @@ public class Player : MonoBehaviour
         else
             _audioPlayer.clip = powerUpSound;
             _audioPlayer.Play();
+    }
+
+    private void ActivateLaserLock()
+    {
+        _whenCanFire = Time.time + _laserLockTimeDelay;
     }
 
     void Heal()

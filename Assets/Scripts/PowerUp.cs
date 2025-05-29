@@ -42,5 +42,6 @@ public enum PowerupType
     SpeedUp,
     Ammunition,
     Health,
-    PulseBomb
+    PulseBomb,
+    LaserLock
 }

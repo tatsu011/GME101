@@ -49,12 +49,12 @@ public class Enemy : MonoBehaviour, IEnemy
         _anim = GetComponent<Animator>();
         if(_anim == null)
         {
-            Debug.LogError("Error: Enemy missing animator component!");
+            Debug.LogWarning($"Error: Enemy {name} missing animator component!");
         }
         _audio = GetComponent<AudioSource>();
         if(_audio == null)
         {
-            Debug.LogError("Error: no audio for death sfx.");
+            Debug.LogWarning($"Error: no audio player for death sfx for {name}.");
         }
         _laserContainer = GameObject.Find("LaserContainer").transform;
         

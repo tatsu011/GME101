@@ -15,6 +15,7 @@ public class HorizontalEnemy : Enemy
     float _explosionDuration = 2.5f;
     [SerializeField]
     bool _borderChecked = false;
+
     public override void DoMovement()
     {
         base.DoMovement();
